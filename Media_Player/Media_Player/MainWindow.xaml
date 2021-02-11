@@ -1,0 +1,97 @@
+﻿<Window x:Class="Media_Player.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Media_Player"
+        mc:Ignorable="d"
+        Title="Media Player" Height="460" Width="800" MinWidth="450" MinHeight="470">
+    <!-- Resources for Custom Command bindings -->
+    <Window.Resources>
+        <RoutedUICommand x:Key="Edit" Text="Edit" />
+        <RoutedUICommand x:Key="Save" Text="Save" />
+    </Window.Resources>
+    
+    <!-- Command bindings -->
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Open" CanExecute="Open_CanExecute" Executed="Open_Executed" />
+        <CommandBinding Command="MediaCommands.Play" CanExecute="Play_CanExecute" Executed="Play_Executed" />
+        <CommandBinding Command="MediaCommands.Pause" CanExecute="Pause_CanExecute" Executed="Pause_Executed" />
+        <CommandBinding Command="MediaCommands.Stop" CanExecute="Stop_CanExecute" Executed="Stop_Executed" />
+        <CommandBinding Command="{StaticResource Edit}" CanExecute="Edit_CanExecute" Executed="Edit_Executed" />
+        <CommandBinding Command="{StaticResource Save}" CanExecute="Save_CanExecute" Executed="Save_Executed" />
+    </Window.CommandBindings>
+
+    <!-- Main Grid + Rows and Columns -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" MinWidth="100"/>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+        
+        <!-- Action bar -->
+        <DockPanel Grid.ColumnSpan="3">
+            <Menu DockPanel.Dock="Top" Height="20">
+                <MenuItem Header="_File">
+                    <MenuItem Header="Open MP3" Command="ApplicationCommands.Open"/>
+                    <MenuItem Header="Tag Current MP3" Command="{StaticResource Edit}"/>
+                    <Separator></Separator>
+                    <MenuItem Header="_Exit" Click="Exit_Click" />
+                </MenuItem>
+                <MenuItem Header="_Media">
+                    <MenuItem Header="Play" Command="MediaCommands.Play"/>
+                    <MenuItem Header="Pause" Command="MediaCommands.Pause"/>
+                    <MenuItem Header="Stop" Command="MediaCommands.Stop"/>
+                </MenuItem>
+            </Menu>
+        </DockPanel>
+        
+        <!-- Open and Edit Controls -->
+        <StackPanel Grid.Row="1" Grid.RowSpan="3">
+            <Button Height="100" Command="ApplicationCommands.Open">
+                <Image Source="Images\open_file.png"></Image>
+            </Button>
+            <Button Height="100" Command="{StaticResource Edit}">
+                <Image Source="Images\edit.png"></Image>
+            </Button>
+            <TextBlock>-- Now Playing --</TextBlock>
+            <TextBlock>Title</TextBlock>
+            <TextBlock Name="Song_Title"></TextBlock>
+            <TextBlock>Artist</TextBlock>
+            <TextBlock Name="Song_Artist"></TextBlock>
+        </StackPanel>
+        
+        <!-- Media Controls -->
+        <DockPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3">
+            <Button Command="MediaCommands.Play">
+                <Image Source="Images\media-play.png"></Image>
+            </Button>
+            <Button Command="MediaCommands.Pause">
+                <Image Source="Images\pause-icon.png"></Image>
+            </Button>
+            <Button Command="MediaCommands.Stop">
+                <Image Source="Images\stop-icon.png"></Image>
+            </Button>
+            <TextBlock Name="Time">00:00:00</TextBlock>
+            <Slider Name="sliProgress" Thumb.DragStarted="sliProgress_DragStarted"  Thumb.DragCompleted="sliProgress_DragCompleted" ValueChanged="sliProgress_ValueChanged"/>
+        </DockPanel>
+        <MediaElement Name="mePlayer" Grid.Row="1" Grid.Column="1" Grid.RowSpan="3" Grid.ColumnSpan="2" LoadedBehavior="Manual" Stretch="None" />
+        
+        <!-- Edit entry Controls -->
+        <StackPanel Name="EntryPanel" Margin="10" Visibility="Hidden" Grid.Row="1" Grid.Column="1" Grid.RowSpan="3">
+            <TextBlock TextAlignment="Center">Title</TextBlock>
+            <TextBox Name="TitleEntry" TextAlignment="Center"></TextBox>
+            <TextBlock TextAlignment="Center">Artist</TextBlock>
+            <TextBox Name="ArtistEntry" TextAlignment="Center"></TextBox>
+            <Button Command="{StaticResource Save}">Save</Button>
+        </StackPanel>
+    </Grid>
+</Window>
